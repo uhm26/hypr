@@ -18,10 +18,11 @@ jobs:
         run: pacman -Syu --noconfirm --needed base-devel hyprland
       - uses: actions/checkout@v5
       - name: Config
+        # Hyprland refuses to run as root, so check as a normal user.
         run: |
           pacman -Q hyprland
-          ./link.sh
-          ./check.sh
+          useradd -m ci
+          su ci -c "./link.sh && ./check.sh"
       - name: Plugins
         shell: bash
         run: |
