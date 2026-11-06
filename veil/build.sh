@@ -6,7 +6,7 @@ set -eu
 cd "$(dirname "$0")"
 mkdir -p build
 deps="hyprland pixman-1 libdrm libinput libudev wayland-server xkbcommon lua"
-# shellcheck disable=SC2046 # pkgconf output must word-split into flags
+# shellcheck disable=SC2046,SC2086 # $deps and the pkgconf output must word-split
 g++ -std=c++2b -shared -fPIC -O2 -Wall -Wno-c++11-narrowing \
     $(pkgconf --cflags $deps) \
     src/main.cpp src/veil.cpp src/shade.cpp -o build/veil.so
