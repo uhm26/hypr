@@ -20,11 +20,11 @@ It works on monitor and region shares.
 
 ## Use
 
-Build it first (see the [main README](../README.md#build)), then load it and add rules.
+Build it first (see the [main README](../README.md#build-the-plugins)), then load it and add rules.
 The examples use Hyprland's Lua config:
 
 ```lua
-hl.plugin.load("/path/to/hypr-plugins/veil/build/veil.so")
+hl.plugin.load("/path/to/hypr/veil/build/veil.so")
 
 -- The plugin adds hl.plugin.veil. Until it has loaded, `veil` would be an unknown
 -- rule field, so the rules sit behind this check.
