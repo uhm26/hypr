@@ -1,0 +1,34 @@
+# Builds every plugin on each push and pull request, in Arch Linux against the newest
+# Hyprland package, so a Hyprland update that breaks a plugin shows up here. Warnings fail.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1" # weekly: catch new Hyprland releases without a push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Arch packages
+        run: pacman -Syu --noconfirm --needed base-devel hyprland
+      - uses: actions/checkout@v5
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          pacman -Q hyprland
+          for build in */build.sh; do
+            echo "== $build"
+            "./$build" 2>&1 | tee build.log
+            if grep -q 'warning:' build.log; then echo "warnings in $build" >&2; exit 1; fi
+          done
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: shellcheck --shell=sh */build.sh
