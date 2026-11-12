@@ -1,0 +1,57 @@
+# The whole-desktop installer on a fresh Arch Linux: a normal user who may use sudo runs it
+# the way the README says (piped into sh), then every part is checked, then it runs again
+# (the update path) and must not add anything twice. Hyprland itself needs a real screen,
+# so it only checks the config here. Runs when the installer changes, or by hand.
+name: install-test
+
+on:
+  push:
+    branches: [main]
+    paths: [install.sh, link.sh, .github/workflows/install-test.yml]
+  workflow_dispatch:
+
+jobs:
+  fresh-arch:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: A fresh Arch with a user who may use sudo
+        run: |
+          pacman -Syu --noconfirm --needed sudo
+          useradd -m -G wheel tester
+          echo 'tester ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/tester
+          install -d -m 700 -o tester "/run/user/$(id -u tester)"
+          cp install.sh /tmp/setup.sh && chmod 644 /tmp/setup.sh
+
+      - name: Install (as in the README, piped into sh)
+        run: runuser -u tester -- env HOME=/home/tester HYPR_LOGIN=autologin sh -c 'sh < /tmp/setup.sh'
+
+      - name: Every part is there
+        run: |
+          set -eux
+          h=/home/tester
+          test -L "$h/.config/hypr"
+          for t in term files image video screenshot wallpaper clipboard auth bar-sys bar-launcher; do
+            test -x "$h/.local/bin/$t"
+            if ldd "$h/.local/bin/$t" | grep "not found"; then echo "$t misses libraries"; exit 1; fi
+          done
+          test -f "$h/hypr/veil/build/veil.so"
+          test -f "$h/hypr/config/bar.lua"
+          test -f "$h/.config/quickshell/bar/shell.qml"
+          grep -q -- --autologin "/etc/systemd/system/getty@tty1.service.d/autologin.conf"
+          grep -q start-hyprland "$h/.bash_profile"
+          grep -q 'ferrite installer' "$h/.bashrc"
+          test -z "$(git -C "$h/hypr" status --porcelain)"
+          runuser -u tester -- env HOME="$h" xdg-mime query default image/png | grep -qx image.desktop
+          runuser -u tester -- env HOME="$h" XDG_RUNTIME_DIR="/run/user/$(id -u tester)" \
+            Hyprland --verify-config -c "$h/.config/hypr/hyprland.lua" 2>&1 | grep -qx 'config ok'
+
+      - name: Running it again (updating) adds nothing twice
+        run: |
+          set -eux
+          runuser -u tester -- env HOME=/home/tester sh -c 'sh < /tmp/setup.sh'
+          test "$(grep -c 'hypr installer' /home/tester/.bash_profile)" = 1
+          test "$(grep -c 'ferrite installer' /home/tester/.bashrc)" = 1
+          test -z "$(git -C /home/tester/hypr status --porcelain)"

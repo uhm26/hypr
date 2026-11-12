@@ -46,7 +46,7 @@ each one holds one topic.
 
 - `monitors.lua` names my outputs (`DP-3`, `DP-2`). Put yours in: `hyprctl monitors all`
   lists them. Any other screen gets its preferred mode.
-- `autostart.lua` starts my bar (Quickshell, not published) and ferrite tools. Remove what
+- `autostart.lua` starts the bar (github.com/uhm26/bar) and ferrite tools. Remove what
   you don't have; `binds.lua` uses `term` and `files` from ferrite too.
 - `veil.lua` loads the plugin from `../veil/build/veil.so`: build it first, or delete that
   file and its `require` line in `hyprland.lua`.

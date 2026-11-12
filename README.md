@@ -14,6 +14,21 @@ with Claude: I decide what everything does and how it looks, Claude writes most 
 
 </div>
 
+## Install everything
+
+On Arch Linux, freshly installed or with Hyprland already running, one command sets up the
+whole desktop: Hyprland with this config, the veil plugin, the
+[ferrite](https://github.com/uhm26/ferrite) apps, the [bar](https://github.com/uhm26/bar), a
+login and a wallpaper. Run it as your normal user, not root. It asks for your password to
+install packages:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/uhm26/hypr/main/install.sh | sh
+```
+
+When it says **Done!**, restart the PC (or, if you ran it inside Hyprland, log out with
+`Super+Shift+M` and log in again). To update everything later, run the same command again.
+
 ## What's here
 
 | Folder | What it is |
