@@ -4,3 +4,4 @@ build/
 
 # written by the bar's installer (machine-local)
 config/bar.lua
+config/local.lua

@@ -6,7 +6,7 @@ each one holds one topic.
 | File | What's in it |
 |---|---|
 | `hyprland.lua` | Entry point: `require`s the files below |
-| `monitors.lua` | Two 1080p screens side by side (165 Hz left, 75 Hz right), exact modes |
+| `monitors.lua` | Every screen at its highest resolution and refresh rate, side by side |
 | `env.lua` | Cursor theme and size, Flatpak app folders |
 | `look.lua` | Gaps, 1 px borders, rounding, glass blur, shadows, animations |
 | `palette.lua` | Every color, border size and spring time, in one place |
@@ -44,8 +44,10 @@ each one holds one topic.
 
 ## Make it yours
 
-- `monitors.lua` names my outputs (`DP-3`, `DP-2`). Put yours in: `hyprctl monitors all`
-  lists them. Any other screen gets its preferred mode.
+- Your own changes go in `local.lua` (make it next to `hyprland.lua`). Git ignores it, so
+  updating never touches it, and it loads last, so it wins. For example a screen of your choice:
+  `hl.monitor({ output = "DP-1", mode = "2560x1440@144", position = "0x0", scale = 1 })`
+  (`hyprctl monitors all` lists your screens and their modes).
 - `autostart.lua` starts the bar (github.com/uhm26/bar) and ferrite tools. Remove what
   you don't have; `binds.lua` uses `term` and `files` from ferrite too.
 - `veil.lua` loads the plugin from `../veil/build/veil.so`: build it first, or delete that
