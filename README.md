@@ -36,7 +36,7 @@ my [ferrite](https://github.com/uhm26/ferrite) tools.
 git clone https://github.com/uhm26/hypr
 cd hypr
 ./check.sh     # checks the config without starting Hyprland
-./link.sh      # points ~/.config/hypr at config/ (refuses to touch a real folder)
+./link.sh      # points ~/.config/hypr at config/ (an old folder there is kept as a backup)
 ```
 
 It is made for my PC: [config/README.md](config/README.md) says what to change first.
