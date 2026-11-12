@@ -5,7 +5,8 @@ hl.on("hyprland.start", function()
     -- before other apps start and look for them.
     -- Run from a checkout in ~/projects/bar if there is one; an installed bar is started by
     -- the bar.lua its installer writes (loaded at the end of hyprland.lua).
-    hl.exec_cmd("sh -c 'test -f ~/projects/bar/shell/shell.qml && exec qs -p ~/projects/bar/shell'")
+    -- Screens at different refresh rates need the bar's simple animation driver (see its shell.qml).
+    hl.exec_cmd("sh -c 'test -f ~/projects/bar/shell/shell.qml || exit 0; n=$(hyprctl monitors | grep -oE \"@[0-9]+[.0-9]* at\" | cut -d. -f1 | sort -u | wc -l); [ \"$n\" -gt 1 ] && export QSG_USE_SIMPLE_ANIMATION_DRIVER=1; exec qs -p ~/projects/bar/shell'")
     -- Own wallpaper daemon (ferrite wallpaper, github.com/uhm26/ferrite): bare `wallpaper` shows the last wallpaper.
     -- Change it any time with `wallpaper <image>`.
     hl.exec_cmd("wallpaper")
