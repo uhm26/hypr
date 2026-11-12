@@ -3,7 +3,9 @@
 hl.on("hyprland.start", function()
     -- My bar (Quickshell, not published). First, so it hosts the tray and notifications
     -- before other apps start and look for them.
-    hl.exec_cmd("qs -p ~/projects/bar/shell")
+    -- Run from a checkout in ~/projects/bar if there is one; an installed bar is started by
+    -- the bar.lua its installer writes (loaded at the end of hyprland.lua).
+    hl.exec_cmd("sh -c 'test -f ~/projects/bar/shell/shell.qml && exec qs -p ~/projects/bar/shell'")
     -- Own wallpaper daemon (ferrite wallpaper, github.com/uhm26/ferrite): bare `wallpaper` shows the last wallpaper.
     -- Change it any time with `wallpaper <image>`.
     hl.exec_cmd("wallpaper")

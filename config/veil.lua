@@ -1,7 +1,13 @@
 -- veil plugin (../veil in this repo): hides things from screen shares (black/blur/pixel).
 -- Rebuild it after every Hyprland update (veil/build.sh), or it refuses to load.
 -- ~/.config/hypr links to this folder (link.sh), so ../veil is the plugin next to it.
-hl.plugin.load(os.getenv("HOME") .. "/.config/hypr/../veil/build/veil.so")
+-- Not built: skip it quietly (the rest of the config works without it).
+local so = os.getenv("HOME") .. "/.config/hypr/../veil/build/veil.so"
+local built = io.open(so)
+if built then
+    built:close()
+    hl.plugin.load(so)
+end
 
 -- The plugin adds hl.plugin.veil; until it has loaded (and on a Hyprland without it) the
 -- `veil` rule would be an unknown field, so it sits behind this check.
