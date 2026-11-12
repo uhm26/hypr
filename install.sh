@@ -167,6 +167,7 @@ setup_autologin() {
     printf '[Service]\nExecStart=\nExecStart=-/sbin/agetty -o "-p -f -- \\\\u" --noclear --autologin %s %%I $TERM\n' "$user" \
         | sudo tee "$d/autologin.conf" >/dev/null
     # Auto-login can be faster than the graphics driver: wait up to 10 s for the GPU first.
+    # shellcheck disable=SC2016 # runs later, in the login shell
     start='i=0; while [ $i -lt 100 ] && ! ls /dev/dri/by-path/*-card >/dev/null 2>&1; do sleep 0.1; i=$((i+1)); done; udevadm settle -t 5; start-hyprland'
     case "$(getent passwd "$user" | cut -d: -f7)" in
         */fish)
@@ -185,6 +186,7 @@ add_start() {
     grep -qsF "$MARK" "$1" && return 0
     # A new bash profile must still load ~/.bashrc, as Arch's default one does.
     if [ ! -e "$1" ] && [ "${1##*/}" = .bash_profile ]; then echo '[ -f ~/.bashrc ] && . ~/.bashrc' >"$1"; fi
+    # shellcheck disable=SC2016 # written into the profile as it is
     printf '\n%s\nif [ -z "${WAYLAND_DISPLAY:-}" ] && [ "$(tty)" = /dev/tty1 ]; then sh -c %s; fi\n' \
         "$MARK" "'$2'" >>"$1"
 }
