@@ -17,9 +17,7 @@ pcall(require, "bar")
 
 -- Your own changes for this PC (screens, extra binds, ...): put them in local.lua next to
 -- this file. Git ignores it, so updates never touch it, and it loads last, so it wins.
-local mine = os.getenv("HOME") .. "/.config/hypr/local.lua"
-local found = io.open(mine)
-if found then
-    found:close()
+-- package.searchpath looks exactly where require does.
+if package.searchpath("local", package.path) then
     require("local")
 end
