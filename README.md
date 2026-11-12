@@ -27,7 +27,7 @@ curl -fsSL https://raw.githubusercontent.com/uhm26/hypr/main/install.sh | sh
 ```
 
 When it says **Done!**, restart the PC (or, if you ran it inside Hyprland, log out with
-`Super+Shift+M` and log in again). To update everything later, run the same command again.
+`Super+Shift+M` and log in again). To update everything later, type `update` in a terminal.
 
 ## What's here
 

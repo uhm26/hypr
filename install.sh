@@ -116,6 +116,20 @@ install_apps() {
     fi
 }
 
+# The `update` command. Until the updater app ships it is this placeholder, which runs this
+# installer again; the app replaces the file (same name, same folder) when it is installed.
+install_update_cmd() {
+    f="$HOME/.local/bin/update"
+    if [ -e "$f" ] && ! grep -qs "$MARK" "$f"; then return 0; fi # the real updater stays
+    if has update && [ "$(command -v update)" != "$f" ]; then
+        say "Another program is called update ($(command -v update)): type the install command to update."
+        return 0
+    fi
+    mkdir -p "${f%/*}"
+    printf '#!/bin/sh\n%s: updates the whole desktop by running its installer again.\ncurl -fsSL %s/hypr/main/install.sh | sh\n' "$MARK" "$RAW" >"$f"
+    chmod 755 "$f"
+}
+
 install_bar() {
     step "5/7  Installing the bar (top bar, app launcher, notifications)"
     run_installer "$RAW/bar/main/install.sh"
@@ -220,7 +234,7 @@ finish() {
     say ""
     say "Keys:  Super+Q terminal   Super+R apps   Super+E files   Super+C close window"
     say "       PageDown screenshot   Super+1..0 workspaces   Super+Shift+M log out"
-    say "Update everything later: run the same command again."
+    say "Update everything later: type  update  in a terminal."
 }
 
 main() {
@@ -236,6 +250,7 @@ main() {
     build_veil
     install_apps
     install_bar
+    install_update_cmd
     setup_login
     set_wallpaper
     finish

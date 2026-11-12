@@ -43,6 +43,7 @@ jobs:
           grep -q -- --autologin "/etc/systemd/system/getty@tty1.service.d/autologin.conf"
           grep -q start-hyprland "$h/.bash_profile"
           grep -q 'ferrite installer' "$h/.bashrc"
+          grep -q 'hypr installer' "$h/.local/bin/update"
           test -z "$(git -C "$h/hypr" status --porcelain)"
           runuser -u tester -- env HOME="$h" xdg-mime query default image/png | grep -qx image.desktop
           runuser -u tester -- env HOME="$h" XDG_RUNTIME_DIR="/run/user/$(id -u tester)" \
